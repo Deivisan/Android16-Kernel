@@ -1,0 +1,38 @@
+{
+  "name": "android16-kernel",
+  "version": "1.0.0",
+  "description": "Android Kernel Build System for POCO X5 5G (Halium Porting)",
+  "scripts": {
+    "check": "./build-scripts/check-configs.sh",
+    "check:kernel": "./build-scripts/check-configs.sh kernel-source/.config",
+    "build": "./build-scripts/build-kernel.sh",
+    "build:clean": "cd kernel-source && make clean && cd ../ && ./build-scripts/build-kernel.sh",
+    "build:verbose": "./build-scripts/build-kernel.sh kernel-source $(nproc) out 2>&1 | tee out/build-$(date +%Y%m%d-%H%M%S).log",
+    "test:device": "echo 'adb reboot bootloader && fastboot boot out/Image.gz-latest'",
+    "docs:read": "cat docs/kernel-analysis.md",
+    "setup:check": "which aarch64-linux-gnu-gcc && which clang && which make && which bc",
+    "backup:extract": "cd backups && tar -xJf poco-x5-5g-rose-2025-02-01/device-images-backup-2025-02-01.tar.xz"
+  },
+  "keywords": [
+    "android",
+    "kernel",
+    "halium",
+    "arm64",
+    "cross-compile",
+    "poco-x5",
+    "rose",
+    "moonstone",
+    "snapdragon-695"
+  ],
+  "author": "Deivisan",
+  "license": "GPL-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Deivisan/Android16-Kernel.git"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}
