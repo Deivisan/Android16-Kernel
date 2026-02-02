@@ -2,7 +2,34 @@
 
 > Documentação de todos os erros encontrados durante o build
 > Kernel: 5.4.302-moonstone
-> Clang: 21.1.6
+> Clang: 21.1.6 (testado) / clang-r416183b (oficial dos devs)
+
+---
+
+## 🎯 TOOLCHAIN OFICIAL DOS DEVS (DESCUBERTA!)
+
+**Arquivo:** `build.config.common` (no repositório dos devs)
+
+```bash
+LLVM=1
+CLANG_PREBUILT_BIN=prebuilts-master/clang/host/linux-x86/clang-r416183b/bin
+BRANCH=android11-5.4
+```
+
+**Toolchain EXATA:**
+- **Nome:** Google Clang r416183b
+- **Base:** Clang 12.0.5
+- **Versão Android:** Android 12 (android11-5.4 branch)
+- **Localização:** `prebuilts-master/clang/host/linux-x86/clang-r416183b/bin`
+
+**Download:**
+```bash
+# Opção 1: Baixar Android NDK r23b (contém clang-r416183b)
+wget https://dl.google.com/android/repository/android-ndk-r23b-linux-x86_64.zip
+
+# Opção 2: Usar clang do sistema (Arch Linux) com flags corretas
+# Clang 21.1.6 funciona se usar: -Wno-format -Wno-unused-variable
+```
 
 ---
 
