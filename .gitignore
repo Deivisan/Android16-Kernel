@@ -1,0 +1,35 @@
+# NDK e toolchains (muito grandes, baixar quando necessário)
+android-ndk-*/
+toolchains/
+*.tar.gz
+*.tar.xz
+
+# Build artifacts temporários
+kernel-source/.tmp_*
+kernel-source/scripts/basic/fixdep
+kernel-source/scripts/mod/modpost
+kernel-source/scripts/selinux/
+kernel-source/.*.cmd
+kernel-source/.config.old
+
+# Objetos compilados
+*.o
+*.o.d
+*.ko
+*.mod.c
+*.symtypes
+*.order
+modules.builtin
+
+# Backups locais temporários
+*~
+*.swp
+*.swo
+.DS_Store
+
+# IDEs
+.vscode/
+.idea/
+*.code-workspace
+kernel-source/
+*.tar.bz2
