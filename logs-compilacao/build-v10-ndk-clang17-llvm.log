@@ -1,0 +1,8 @@
+arch/arm64/Makefile:27: ld does not support --fix-cortex-a53-843419; kernel may be susceptible to erratum
+arch/arm64/Makefile:38: LSE atomics not supported by binutils
+arch/arm64/Makefile:52: Detected assembler with broken .inst; disassembly will be unreliable
+scripts/kconfig/conf  --syncconfig Kconfig
+scripts/Kconfig.include:36: linker 'llvm-ld' not found
+make[2]: *** [scripts/kconfig/Makefile:73: syncconfig] Error 1
+make[1]: *** [Makefile:608: syncconfig] Error 2
+make: *** [Makefile:724: include/config/auto.conf] Error 2

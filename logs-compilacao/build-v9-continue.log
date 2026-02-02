@@ -1,0 +1,84 @@
+  CALL    scripts/atomic/check-atomics.sh
+  CALL    scripts/checksyscalls.sh
+  CHK     include/generated/compile.h
+./scripts/mkcompile_h: line 49: hostname: comando não encontrado
+  CC      mm/compaction.o
+  CC      mm/vmacache.o
+  OBJCOPY arch/arm64/kernel/efi-entry.stub.o
+  CC      fs/proc/meminfo.o
+  CC      fs/proc/stat.o
+  CC      arch/arm64/kernel/bootinfo.o
+  CC      drivers/char/adsprpc.o
+  CC      mm/interval_tree.o
+  CC      fs/proc/uptime.o
+  CC      arch/arm64/kernel/kaslr.o
+  CC      kernel/sched/psi.o
+b"arch/arm64/kernel/bootinfo.c:104:6: warning: conflicting types for 'get_powerup_reason' due to enum/integer mismatch; have 'powerup_reason_t(void)' [-Wenum-int-mismatch]\n" error, forbidden warning: bootinfo.c:104
+  CC      fs/proc/util.o
+make[2]: *** [scripts/Makefile.build:288: arch/arm64/kernel/bootinfo.o] Error 1
+make[2]: ** Esperando que outros processos terminem.
+  CC      fs/proc/version.o
+  CC      drivers/clk/qcom/common.o
+b"fs/proc/meminfo.c: In function 'show_val_kb':\n" b"fs/proc/meminfo.c:52:69: warning: format '%lld' expects argument of type 'long long int', but argument 4 has type 'long unsigned int' [-Wformat=]\n" error, forbidden warning: meminfo.c:52
+  AR      virt/lib/built-in.a
+make[2]: *** [scripts/Makefile.build:288: fs/proc/meminfo.o] Error 1
+make[2]: ** Esperando que outros processos terminem.
+  AR      virt/built-in.a
+  CC      mm/list_lru.o
+b'In file included from ./include/linux/printk.h:7,\n' b'                 from ./include/linux/kernel.h:15,\n' b'                 from ./include/asm-generic/bug.h:19,\n' b'                 from ./arch/arm64/include/asm/bug.h:26,\n' b'                 from ./include/linux/bug.h:5,\n' b'                 from ./include/linux/scatterlist.h:7,\n' b'                 from ./include/linux/dma-buf.h:18,\n' b'                 from drivers/char/adsprpc.c:14:\n' b"drivers/char/adsprpc.c: In function 'context_build_overlap':\n" b"./include/linux/kern_levels.h:5:25: warning: format '%llx' expects argument of type 'long long unsigned int', but argument 5 has type 'long unsigned int' [-Wformat=]\n" error, forbidden warning: kern_levels.h:5
+make[2]: *** [scripts/Makefile.build:288: drivers/char/adsprpc.o] Error 1
+make[1]: *** [scripts/Makefile.build:558: drivers/char] Error 2
+make[1]: ** Esperando que outros processos terminem.
+  CC      mm/workingset.o
+b'In file included from ./include/linux/kobject.h:19,\n' b'                 from ./include/linux/device.h:16,\n' b'                 from ./include/linux/node.h:18,\n' b'                 from ./include/linux/cpu.h:17,\n' b'                 from mm/compaction.c:11:\n' b"In function '__list_cut_position',\n" b"    inlined from 'list_cut_position' at ./include/linux/list.h:368:3,\n" b"    inlined from 'move_freelist_tail' at mm/compaction.c:1215:3:\n" b"./include/linux/list.h:338:21: warning: storing the address of local variable 'sublist' in '*&freepage_6(D)->D.16797.D.16743.lru.next' [-Wdangling-pointer=]\n" error, forbidden warning: list.h:338
+b'In file included from drivers/clk/qcom/common.c:26:\n' b"drivers/clk/qcom/vdd-level.h:21:12: warning: 'vdd_corner' defined but not used [-Wunused-variable]\n" error, forbidden warning: vdd-level.h:21
+make[1]: *** [scripts/Makefile.build:558: arch/arm64/kernel] Error 2
+make: *** [Makefile:1852: arch/arm64] Error 2
+make: ** Esperando que outros processos terminem.
+make[1]: *** [scripts/Makefile.build:288: mm/compaction.o] Error 1
+make[1]: ** Esperando que outros processos terminem.
+make[3]: *** [scripts/Makefile.build:288: drivers/clk/qcom/common.o] Error 1
+make[2]: *** [scripts/Makefile.build:558: drivers/clk/qcom] Error 2
+make[1]: *** [scripts/Makefile.build:558: drivers/clk] Error 2
+make: *** [Makefile:1852: drivers] Error 2
+  CC      fs/sysfs/file.o
+make[1]: *** [scripts/Makefile.build:558: fs/proc] Error 2
+make[1]: ** Esperando que outros processos terminem.
+  CC      fs/sysfs/dir.o
+  CC      fs/tracefs/inode.o
+  CC      fs/sysfs/symlink.o
+  CC      fs/sysfs/mount.o
+  CC      fs/sysfs/group.o
+b'In file included from ./include/trace/define_trace.h:102,\n' b'                 from ./include/trace/events/psi.h:72,\n' b'                 from kernel/sched/psi.c:146:\n' b"./include/trace/events/psi.h: In function 'trace_raw_output_psi_event':\n" b"./include/trace/events/psi.h:64:19: warning: '#' flag used with '%u' gnu_printf format [-Wformat=]\n" error, forbidden warning: psi.h:64
+make[2]: *** [scripts/Makefile.build:288: kernel/sched/psi.o] Error 1
+make[1]: *** [scripts/Makefile.build:558: kernel/sched] Error 2
+make: *** [Makefile:1852: kernel] Error 2
+  GEN     lib/crc32table.h
+  CC      lib/dynamic_debug.o
+  CC      lib/nlattr.o
+  CC      lib/checksum.o
+  CC      lib/cpu_rmap.o
+  CC      lib/dynamic_queue_limits.o
+  CC      lib/glob.o
+  CC      lib/strncpy_from_user.o
+  CC      lib/strnlen_user.o
+  CC      lib/net_utils.o
+  CC      lib/sg_pool.o
+  CC      lib/asn1_decoder.o
+make: *** [Makefile:1852: mm] Error 2
+  GEN     lib/oid_registry_data.c
+  CC      lib/ucs2_string.o
+  CC      lib/sbitmap.o
+  AR      fs/tracefs/built-in.a
+  CC      lib/argv_split.o
+  AR      fs/sysfs/built-in.a
+make: *** [Makefile:1852: fs] Error 2
+  CC      lib/bug.o
+  CC      lib/chacha.o
+  CC      lib/clz_tab.o
+  CC      lib/cmdline.o
+  CC      lib/cpumask.o
+b"lib/dynamic_debug.c: In function 'dynamic_debug_init':\n" b'lib/dynamic_debug.c:1025:31: warning: comparison between two arrays [-Warray-compare]\n' error, forbidden warning: dynamic_debug.c:1025
+make[1]: *** [scripts/Makefile.build:288: lib/dynamic_debug.o] Error 1
+make[1]: ** Esperando que outros processos terminem.
+make: *** [Makefile:1852: lib] Error 2

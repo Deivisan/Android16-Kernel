@@ -1,0 +1,20 @@
+arch/arm64/Makefile:27: ld does not support --fix-cortex-a53-843419; kernel may be susceptible to erratum
+arch/arm64/Makefile:38: LSE atomics not supported by binutils
+arch/arm64/Makefile:52: Detected assembler with broken .inst; disassembly will be unreliable
+  HOSTCC  scripts/basic/fixdep
+  HOSTCC  scripts/kconfig/conf.o
+  HOSTCC  scripts/kconfig/confdata.o
+  HOSTCC  scripts/kconfig/expr.o
+  LEX     scripts/kconfig/lexer.lex.c
+  YACC    scripts/kconfig/parser.tab.[ch]
+  HOSTCC  scripts/kconfig/preprocess.o
+  HOSTCC  scripts/kconfig/symbol.o
+  HOSTCC  scripts/kconfig/lexer.lex.o
+  HOSTCC  scripts/kconfig/parser.tab.o
+  HOSTLD  scripts/kconfig/conf
+scripts/kconfig/conf  --syncconfig Kconfig
+scripts/Kconfig.include:36: linker 'aarch64-linux-android-ld' not found
+make[2]: *** [scripts/kconfig/Makefile:73: syncconfig] Error 1
+make[1]: *** [Makefile:608: syncconfig] Error 2
+make: *** [Makefile:724: include/config/auto.conf] Error 2
+make: ** [include/config/auto.conf] Apagando arquivo 'include/config/tristate.conf'
