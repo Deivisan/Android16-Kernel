@@ -1,427 +1,313 @@
-# 📱 Android16 Kernel Build Guide
+# 🐧 Kernel Customizado para POCO X5 5G (moonstone/rose)
 
-**Dispositivo:** Android 16 (baseado em Android 16)
-**Arquitetura:** ARM64
-**Data:** 01/02/2026
-
----
-
-## 🎯 Objetivo
-
-Construir um kernel customizado para o dispositivo Android16 do Deivi Santana, otimizado para uso pessoal e desenvolvimento.
+**Versão Atual:** 5.4.191 (Build v12 - SUCESSO ✅)  
+**Data:** 02/02/2026  
+**Status:** Compilado e empacotado - Aguardando testes no dispositivo
 
 ---
 
-## 📋 Contexto do Dispositivo
+## 📋 Visão Geral do Projeto
 
-### 📖 Hardware Específico
+Este é um kernel customizado baseado no código-fonte oficial da Xiaomi para o POCO X5 5G, com modificações para suportar:
 
-**Caso do seu dispositivo (exemplo - ajustar conforme necessário):**
-- **CPU:** Snapdragon X serie (tipicamente MSM8953 ou similar)
-- **RAM:** 6GB ou 8GB
-- **GPU:** Adreno (tipicamente Adreno 5xx ou 6xx série)
-- **Storage:** 64GB ou 128GB (expansível)
-- **Display:** 1080p ou 1440p
+- 🐋 **Docker & LXC** - Containers completos no Android
+- 🔧 **Kali NetHunter** - Ferramentas de segurança e testes
+- 📦 **OverlayFS** - Sistema de arquivos overlay para Docker
+- 🌐 **Namespaces & Cgroups** - Isolamento completo de recursos
 
-### 🐧 Hardware do PC de Build
+### **Objetivo do Projeto**
 
-**Lenovo DeiviPC:**
-- **CPU:** AMD Ryzen 7 5700G (8 cores, 16 threads)
-- **RAM:** 14GB DDR4
-- **Arquitetura:** x86_64
-
-### ⚡ Cross-Compilation
-
-Compilando ARM64 (Android) em x86_64 (PC) usando **cross-compilador**.
+Criar e manter uma base de kernel própria para o dispositivo, permitindo:
+1. Atualizações incrementais de versão (5.4 → 5.10 → 5.15 → 6.6)
+2. Aplicação de patches de segurança e features
+3. Personalização e otimizações específicas
+4. Aprendizado sobre desenvolvimento de kernel Android
 
 ---
 
-## 🛠️ Ferramentas de Build
+## 🎯 Status Atual
 
-### Compiladores e Toolchain
+### **✅ Conquistas:**
 
-**GCC para ARM64 (recomendado para kernel de produção):**
+**Build v12 (02/02/2026) - SUCESSO!**
+- ✅ Compilação bem-sucedida após 11 tentativas
+- ✅ Kernel Image.gz criado (15 MB comprimido, 31 MB descomprimido)
+- ✅ Package AnyKernel3 flashável criado (18 MB)
+- ✅ Todas as features Docker/LXC habilitadas
+- ✅ Compatibilidade NetHunter implementada
+
+**Problemas Resolvidos:**
+- ✅ Incompatibilidade GCC 15.1.0 (muito novo)
+- ✅ Incompatibilidade Clang 21.1.6 (muito novo)
+- ✅ Script oculto da Xiaomi bloqueando warnings (`gcc-wrapper.py`)
+- ✅ Conflito de tipos em `bootinfo.h` (unsigned int → int)
+- ✅ Warnings de format string em vários arquivos
+
+### **⏳ Próximos Passos:**
+
+1. **Testar kernel no dispositivo** (boot temporário via fastboot)
+2. **Verificar funcionalidade Docker** após boot bem-sucedido
+3. **Testar estabilidade** (crashes, battery drain, etc.)
+4. **Coletar logs e métricas** de performance
+5. **Planejar atualização para 5.10** (após estabilizar 5.4.191)
+
+---
+
+## 📦 Arquivos Importantes
+
+### **Deliverables (Prontos para Uso):**
+
+```
+📦 kernel-poco-x5-5g-5.4.191-docker-nethunter.zip
+   └─ Flashável via TWRP/OrangeFox
+   └─ MD5: ba4fbe9f397fb80e7c65b87849c3283b
+   └─ Tamanho: 18 MB
+
+💾 compilacoes-bem-sucedidas/
+   ├─ Image-v12-20260202-135708.gz (Kernel backup)
+   ├─ config-v12-20260202-135708 (Configuração usada)
+   └─ MD5: 5878d68818b3295aeca7d61db9f14945
+```
+
+### **Código-Fonte:**
+
+```
+🔧 kernel-source/ (3.4 GB - código modificado)
+   ├─ .config (configuração final que compilou)
+   ├─ arch/arm64/boot/Image.gz (kernel compilado)
+   ├─ scripts/gcc-wrapper.py (MODIFICADO - crítico!)
+   ├─ arch/arm64/include/asm/bootinfo.h (MODIFICADO - crítico!)
+   └─ [outros arquivos modificados para corrigir warnings]
+
+⚙️ anykernel3-moonstone/ (Package source)
+   ├─ anykernel.sh (configuração do instalador)
+   ├─ Image.gz (kernel)
+   └─ META-INF/ (scripts de instalação recovery)
+```
+
+### **Scripts de Build:**
+
+```
+🔨 compilar-kernel.sh (script principal de compilação)
+📊 build-scripts/ (scripts auxiliares)
+   ├─ check-configs.sh (verificar configs Docker/LXC)
+   └─ [outros scripts de verificação]
+```
+
+### **Documentação:**
+
+```
+📚 docs/
+   ├─ INSTRUCOES-FLASH.md (como instalar - LEIA ANTES!)
+   ├─ RELATORIO-COMPILACAO.md (detalhes técnicos do build)
+   ├─ HISTORICO-COMPLETO.md (jornada completa do projeto)
+   └─ CONFIGURACOES-DOCKER.md (configs habilitadas)
+
+📝 logs/
+   └─ build-v12-sucesso.log (log da compilação bem-sucedida)
+```
+
+---
+
+## 🚀 Como Usar Este Repositório
+
+### **1. Clonar em Outro PC:**
+
 ```bash
+# Clone o repositório
+git clone <seu-repo-url> android16-kernel
+cd android16-kernel
+
+# Baixar Android NDK r26d (necessário para compilar)
+wget https://dl.google.com/android/repository/android-ndk-r26d-linux.tar.bz2
+tar xf android-ndk-r26d-linux.tar.bz2 -C ~/Downloads/
+
+# Verificar que tudo está ok
+ls -lh kernel-poco-x5-5g-5.4.191-docker-nethunter.zip
+ls -lh compilacoes-bem-sucedidas/
+```
+
+### **2. Recompilar o Kernel:**
+
+```bash
+# Usar o script de build (já configurado)
+./compilar-kernel.sh
+
+# Ou manualmente:
+cd kernel-source
+export NDK_PATH=~/Downloads/android-ndk-r26d
+export NDK_BIN=$NDK_PATH/toolchains/llvm/prebuilt/linux-x86_64/bin
+export PATH=$NDK_BIN:$PATH
 export ARCH=arm64
+export SUBARCH=arm64
+export CC=$NDK_BIN/clang
+export CLANG_TRIPLE=aarch64-linux-gnu-
 export CROSS_COMPILE=aarch64-linux-gnu-
 
-# Flags otimizados para Snapdragon
-export KCFLAGS="-march=native -O2 -pipe -mtune=cortex-a53"
-export KAFLAGS="-march=native -O2 -pipe -mtune=cortex-a53"
-
-# Flags específicos de kernel
-export CFLAGS_KERNEL="-march=native -O2 -pipe"
-export CFLAGS_MODULE="-march=native -O2 -pipe"
+make WERROR=0 -j$(nproc) Image.gz
 ```
 
-**LLVM/Clang (para desenvolvimento e análise):**
-```bash
-export CC=clang
-export LD=ld.lld
+### **3. Testar no Dispositivo (SEGURO):**
 
-# Flags modernos com sanitizers
-export KCFLAGS="-Werror -Wextra -mllvm"
-export KAFLAGS="-Werror -Wextra -mllvm"
+```bash
+# SEMPRE teste primeiro sem modificar o boot!
+cd ~/Projetos/android16-kernel
+
+# Extrair kernel do ZIP
+unzip kernel-poco-x5-5g-5.4.191-docker-nethunter.zip Image.gz
+
+# Boot temporário (NÃO modifica nada permanentemente)
+adb reboot bootloader
+fastboot boot Image.gz
+
+# Se bootar com sucesso, verificar Docker:
+adb shell uname -a
+adb shell dmesg | grep -i docker
 ```
 
-### Build System
+### **4. Instalação Permanente (APÓS TESTE!):**
 
-**Kbuild** - Build system oficial do kernel Linux
+⚠️ **LEIA `docs/INSTRUCOES-FLASH.md` COMPLETAMENTE ANTES!**
+
 ```bash
-# Diretório do kernel (fora do repo Android)
-KERNEL_BUILD_DIR=~/kernels/android16-kernel
+# 1. BACKUP primeiro!
+adb shell dd if=/dev/block/by-name/boot of=/sdcard/boot_backup.img
+adb pull /sdcard/boot_backup.img ~/backups/
 
-# Configuração básica
-make O=out
-make menuconfig
+# 2. Transferir ZIP
+adb push kernel-poco-x5-5g-5.4.191-docker-nethunter.zip /sdcard/
 
-# Compilar kernel (paralelo)
-make -j$(nproc) bzImage
-make -j$(nproc) modules
-
-# Instalar
-sudo make modules_install install
+# 3. Flash via recovery
+adb reboot recovery
+# No TWRP: Install > Selecionar ZIP > Flash
 ```
 
 ---
 
-## 📁 Estrutura do Projeto
+## 🔧 Informações Técnicas
 
-### Diretório Principal (Fora do repo Android)
+### **Kernel Base:**
+
+- **Versão:** Linux 5.4.191
+- **Fonte:** Xiaomi official kernel source (POCO X5 5G)
+- **SoC:** Qualcomm Snapdragon 695 5G (SM6375)
+- **Arquitetura:** ARM64 (aarch64)
+- **Defconfig Base:** `vendor/moonstone-qgki_defconfig`
+
+### **Compilador Usado:**
+
+- **Toolchain:** Android NDK r26d
+- **Compilador:** Clang 17.0.2
+- **Target:** aarch64-linux-gnu
+- **Flags:** `-O2 -pipe -j16 WERROR=0`
+
+### **Modificações Críticas (NÃO REVERTER!):**
 
 ```
-~/kernels/
-└── android16-kernel/          ← Kernel customizado para seu dispositivo
-    ├── arch/              # Configurações da arquitetura ARM64
-    ├── drivers/           # Drivers específicos (Wi-Fi, Bluetooth, Audio, etc)
-    │   ├── staging/    # Drivers em desenvolvimento
-    │   └── gpu/        # Drivers GPU (Adreno)
-    ├── scripts/           # Scripts de build e automação
-    │   ├── build.sh       # Script principal de build
-    │   ├── flash.sh       # Script para flash no dispositivo
-    │   └── clean.sh       # Script de limpeza
-    ├── patches/           # Patches customizados
-    │   ├── display/      # Patches específicos para display
-    │   ├── performance/   # Otimizações de CPU/GPU
-    │   └── battery/      # Melhorias de gerenciamento de bateria
-    └── .config            # Config do Kbuild
+1. scripts/gcc-wrapper.py
+   └─ Desabilitado bloqueio de warnings da Xiaomi
+   └─ Sem isso, build falha mesmo com WERROR=0
+
+2. arch/arm64/include/asm/bootinfo.h
+   └─ Corrigido tipo: unsigned int → int
+   └─ Fix conflito get_powerup_reason() / set_powerup_reason()
+
+3. fs/proc/meminfo.c
+   └─ Adicionados casts para format strings
+
+4. include/trace/events/psi.h
+   └─ Removida flag '#' inválida de format string
 ```
+
+### **Configurações Docker/LXC Habilitadas:**
+
+Ver lista completa em: `docs/CONFIGURACOES-DOCKER.md`
 
 ---
 
-## 🚀 Procedimento de Build
+## 📊 Histórico de Builds
 
-### 1. Setup Inicial
+| Build | Data | Compilador | Resultado | Problema |
+|-------|------|------------|-----------|----------|
+| v1-v6 | 02/02 | GCC 15.1.0 | ❌ | Muito novo, incompatível |
+| v7-v9 | 02/02 | Clang 21.1.6 | ❌ | Muito novo, warnings |
+| v10-v11 | 02/02 | NDK Clang 17 | ❌ | gcc-wrapper.py bloqueando |
+| **v12** | **02/02** | **NDK Clang 17** | **✅** | **SUCESSO!** |
 
-```bash
-# 1. Criar diretório de trabalho
-mkdir -p ~/kernels/android16-kernel
-cd ~/kernels/android16-kernel
-
-# 2. Obter código fonte do kernel oficial
-# O código fonte está no repo Deivisan/Android em:
-# ~/Projetos/Android-dev/CORE/
-# Copiar código fonte relevante para kernel
-cp -r ~/Projetos/Android-dev/CORE/arch/arm64/configs/* arch/
-cp -r ~/Projetos/Android-dev/CORE/drivers/staging/* drivers/
-```
-
-### 2. Compilação
-
-```bash
-# 3. Configurar cross-compilador
-export ARCH=arm64
-export CROSS_COMPILE=aarch64-linux-gnu-
-
-# 4. Configurar variáveis de build
-export KBUILD_OUTPUT=$(pwd)
-export INSTALL_MOD_PATH=$(pwd)/modules_install
-
-# 5. Compilar kernel
-make O=out -j$(nproc) bzImage
-make -j$(nproc) modules
-
-# 6. Verificar resultado
-ls -lh arch/arm64/boot/Image.gz
-```
-
-### 3. Empacotamento para Flash
-
-```bash
-# 7. Criar pacote para flash no dispositivo via Termux
-mkdir -p out/flash
-
-# Copiar kernel e módulos
-cp arch/arm64/boot/Image.gz out/flash/
-cp arch/arm64/boot/Image.gz-dtb out/flash/
-find . -name '*.ko' -exec cp {} out/flash/modules/ \;
-
-# Criar script de flash
-cat > out/flash/flash.sh << 'EOF'
-#!/data/local/busybox sh
-echo "Flashando kernel Android16 customizado..."
-dd if=/dev/block/by-name/boot of=out/flash/Image.gz
-sync
-echo "Flash concluído! Reiniciando..."
-reboot
-EOF
-chmod +x out/flash/flash.sh
-
-# Empacotar
-tar czf out/flash-android16-$(date +%Y%m%d).tar.gz -C out/flash flash/
-```
+**Tempo total:** ~11 horas (3 sessões)  
+**Taxa de sucesso:** 8.3% (1/12 builds)
 
 ---
 
-## 🎯 Personalização para Uso Pessoal
+## 🎓 Roadmap de Atualizações
 
-### Otimizações de CPU
+### **Fase 1: Estabilização (5.4.191) - ATUAL**
 
-```bash
-# Config do Kbuild para otimizações
-cat > .config << 'EOF'
-# Performance
-CONFIG_CPU_FREQ_DEFAULT=2457600
-CONFIG_CPU_FREQ_GOV_PERFORMANCE=y
+- [x] Compilar kernel base com Docker/LXC
+- [x] Criar package flashável
+- [x] Documentar processo
+- [ ] Testar em dispositivo real
+- [ ] Verificar Docker funcionando
+- [ ] Medir impacto em bateria/performance
 
-# Power
-CONFIG_CPU_FREQ_DEFAULT_MIN=384000
-CONFIG_CPU_FREQ_GOV_POWERSAVE=y
+### **Fase 2: Melhorias (5.4.x)**
 
-# Govenador de freqência
-CONFIG_CPU_FREQ_GOV_SCHEDUTIL=y
+- [ ] Aplicar patches de segurança mais recentes
+- [ ] Otimizações de performance
+- [ ] Reduzir consumo de bateria
 
-EOF
-```
+### **Fase 3: Atualização LTS (5.10.x)**
 
-### Otimizações de GPU (Adreno)
+- [ ] Estudar diferenças entre 5.4 → 5.10
+- [ ] Portar modificações
+- [ ] Testar compatibilidade drivers
 
-```bash
-# Habilitar MSM DRM
-CONFIG_DRM_MSM=y
-CONFIG_DRM_MSM_REGISTER=y
+### **Fase 4: Atualização LTS (5.15.x)**
 
-# Habilitar Adreno GPU
-CONFIG_DRM_MSM=y
-CONFIG_MSM_KGSL=y
-CONFIG_ADRENO_GPU=y
-```
+- [ ] Estudar 5.10 → 5.15
+- [ ] Validar features Android 13/14
 
-### Drivers Específicos (Exemplo)
+### **Fase 5: Atualização LTS (6.6.x)**
 
-**Wi-Fi:**
-```bash
-# Habilitar driver Wi-Fi específico (ex: QCAC)
-CONFIG_WLAN=y
-CONFIG_WCNSS_SSID=y
-```
-
-**Áudio:**
-```bash
-# Driver de áudio específico
-CONFIG_SND_SOC_APQ=y
-```
+- [ ] Maior salto de versão
+- [ ] Features Android 15+
 
 ---
 
-## 🔧 Drivers e Módulos Existentes
+## ⚠️ Avisos Importantes
 
-Verifique o que já existe em `~/Projetos/Android-dev/CORE/drivers/`:
+### **ANTES DE USAR:**
 
-```bash
-# Listar drivers disponíveis
-ls -la ~/Projetos/Android-dev/CORE/drivers/staging/
-
-# Drivers comuns que podem existir:
-# - gpu/drm/msm/
-# - wifi/
-# - bluetooth/
-# - input/touchscreen/
-# - media/
-# - staging/android/
-```
+1. ❌ **Kernel NÃO testado em hardware real ainda**
+2. 💾 **SEMPRE faça backup do boot.img original**
+3. 🔧 **Teste com `fastboot boot` primeiro** (temporário, seguro)
+4. 📱 **Pode causar bootloop** (recuperável com backup)
 
 ---
 
-## 📱 Flash no Dispositivo via Termux
+## 📚 Documentação Completa
 
-### 1. Transferir arquivos
-
-```bash
-# No PC:
-scp out/flash-android16-$(date +%Y%m%d).tar.gz u0_a575@192.168.1.100:/sdcard/Download/
-
-# Via ADB (se conectado por USB):
-adb push out/flash-android16-$(date +%Y%m%d).tar.gz /sdcard/Download/
-```
-
-### 2. Flash no Android
-
-```bash
-# Entrar no Android via ADB
-adb shell
-
-# Navegar até diretório de download
-cd /sdcard/Download/
-
-# Descompactar
-tar xzf flash-android16-*.tar.gz
-
-# Copiar boot.img
-cp flash/Image /sdcard/Download/boot.img
-
-# Script de flash (previamente preparado)
-sh /sdcard/Download/flash.sh
-
-# Sair do shell
-exit
-```
+Ver pasta `docs/` para guias detalhados.
 
 ---
 
-## 🐛 Troubleshooting
+## 📝 Changelog
 
-### Erro de compilação - "multiple definition of 'y'"
+### **v12 (02/02/2026) - Primeira Compilação Bem-Sucedida**
 
-**Causa:** Definindo 'y' várias vezes no mesmo arquivo de config.
+**Adicionado:**
+- Suporte completo Docker & LXC
+- Compatibilidade Kali NetHunter
+- Package AnyKernel3 flashável
 
-**Solução:**
-```bash
-# Usar menuconfig visual
-make menuconfig
-
-# Ou verificar arquivo .config
-cat .config | grep -c "CONFIG.*=y" | sort | uniq -c
-```
-
-### Erro de build - "implicit declaration"
-
-**Causa:** Função declarada implicitamente sem header correto.
-
-**Solução:**
-```bash
-# Incluir headers corretos
-export KCFLAGS="-include /path/to/kernel/headers"
-```
-
-### Bootloop após flash
-
-**Causa:** Kernel incompatível ou patches problemáticos.
-
-**Solução:**
-```bash
-# 1. Verificar logs de boot
-adb logcat -b all | grep -i "Kernel panic"
-
-# 2. Voltar para kernel anterior
-# Ter backup do kernel oficial instalado
-
-# 3. Remover patches problemáticos
-git clean -fdx
-```
+**Corrigido:**
+- Script gcc-wrapper.py da Xiaomi
+- Conflito de tipos em bootinfo.h
+- Warnings de format string
 
 ---
 
-## 📚 Recursos de Referência
+**Última atualização:** 02/02/2026  
+**Status:** ✅ Compilado e empacotado - Pronto para testes  
 
-### Documentação Oficial
-
-- **Kbuild Documentation:** https://docs.kernel.org/kbuild/kbuild.html
-- **Kernel Module Programming:** https://tldp.org/LDP/lkmpg/2.4/html/index.html
-- **Reproducible Builds:** https://docs.kernel.org/kbuild/reproducible-builds.html
-
-### Docs do Repositório Deivisan/Android
-
-- **Termux.md:** Configuração completa de ambiente Termux
-- **Android16.md:** Contexto específico do seu dispositivo
-- **ARCHITECTURE.md:** Detalhes da arquitetura ARM64
-
-### Fóruns e Comunidade
-
-- **XDA Developers:** https://forum.xda-developers.com/
-- **LineageOS Wiki:** https://wiki.lineageos.org/
-- **Android Forums:** https://forum.xda-developers.com/
-
----
-
-## 🎯 Roadmap Futuro
-
-### Fase 1: Setup Inicial
-- [x] Criar estrutura de diretórios
-- [x] Copiar código fonte relevante
-- [x] Configurar cross-compilador
-
-### Fase 2: Build de Base
-- [ ] Compilar kernel sem patches
-- [ ] Testar boot básico
-- [ ] Verificar todos os drivers básicos
-
-### Fase 3: Personalização
-- [ ] Otimizações de CPU
-- [ ] Otimizações de GPU
-- [ ] Configurações de bateria
-
-### Fase 4: Drivers Específicos
-- [ ] Wi-Fi (se necessário)
-- [ ] Bluetooth (se necessário)
-- [ ] Áudio (se necessário)
-
-### Fase 5: Empacotamento e Flash
-- [ ] Script de flash automatizado
-- [ ] Procedimento de recovery
-- [ ] Backup de kernel anterior
-
----
-
-## 📝 Notas Importantes
-
-### Cross-Compilation x Native Build
-
-**Cross-compilation:**
-- ✅ Pode compilar para ARM64 no seu PC x86_64
-- ⚠️ Mais lento que build nativo
-- ⚠️ Debugging mais difícil (necessita QEMU)
-
-**Native Build (se tivesse acesso ao código fonte):**
-- ✅ Muito mais rápido
-- ✅ Debugging direto no dispositivo
-- ⚠️ Requer ambiente Linux completo
-
-### DroidKernel/ vs Kernel Vanilla
-
-**DroidKernel:**
-- Modificado para dispositivo específico
-- Drivers customizados
-- Patches proprietários
-- **MELHOR performance** (se bem feito)
-
-**Kernel Vanilla:**
-- Código fonte oficial do Android
-- Estável e bem testado
-- **MENOS drivers**
-- Suporte oficial
-
-**Recomendação:** Comece com kernel vanilla puro, depois adicione patches personalizados gradualmente.
-
----
-
-## 🤖 IA Agents Integration
-
-Este projeto pode ser aprimorado com agents IA:
-
-```typescript
-// DevSan (Kimi) pode analisar código de kernel
-qwen-code analyze --file drivers/gpu/drm/msm/ --focus "performance"
-
-// Gemini pode otimizar configurações
-gemini generate --prompt "Optimize Kconfig for Snapdragon X" --output .config-optimized
-
-// Codex pode implementar features específicas
-codex exec "Implement overclocking safely for Snapdragon" --context ~/kernels/android16-kernel/drivers/cpu/
-```
-
----
-
-**✅ Este guia é o ponto de partida.**
-
-Vamos começar com uma build de kernel estável e puro, depois adicionando personalizações conforme necessário.
+**🚀 Boa sorte com os testes! Leia a documentação com atenção!**
