@@ -1,0 +1,29 @@
+Kernel POCO X5 5G - Docker/LXC/NetHunter
+========================================
+
+Versão: 5.4.191
+Build: v12
+Data: 02/02/2026
+Status: Compilado - Aguardando Teste
+
+MD5 Kernel: 5878d68818b3295aeca7d61db9f14945
+MD5 ZIP: ba4fbe9f397fb80e7c65b87849c3283b
+
+Compilador: Android NDK r26d Clang 17.0.2
+Target: aarch64-linux-gnu (ARM64)
+Device: POCO X5 5G (moonstone/rose)
+SoC: Snapdragon 695 5G (SM6375)
+
+Features:
+- Docker & LXC completo
+- Kali NetHunter
+- OverlayFS
+- Namespaces & Cgroups
+
+Próximos passos:
+1. Testar boot temporário (fastboot boot Image.gz)
+2. Verificar Docker funcionando
+3. Medir estabilidade e bateria
+4. Planejar upgrade para 5.10.x
+
+Leia: docs/INSTRUCOES-FLASH.md antes de usar!

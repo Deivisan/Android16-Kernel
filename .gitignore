@@ -1,7 +1,6 @@
 # NDK e toolchains (muito grandes, baixar quando necessário)
 android-ndk-*/
 toolchains/
-*.tar.gz
 *.tar.xz
 
 # Build artifacts temporários
