@@ -277,6 +277,31 @@ fastboot boot arch/arm64/boot/Image.gz
 
 ---
 
+## 🐛 ERROS CONHECIDOS E SOLUÇÕES
+
+### ❌ Erro 1: FT3519T Touchscreen (Firmware Faltando)
+**Erro:** `FT5452J_Pramboot_V4.1_20210427.i file not found`
+**Causa:** Firmware proprietário não incluído no open source
+**Solução:** `./corrigir-erros.sh` desativa automaticamente
+**Status:** ✅ RESOLVIDO
+
+### ❌ Erro 2: Trace Headers (rmnet_trace.h, trace.h)
+**Erro:** `./rmnet_trace.h file not found` / `./trace.h file not found`
+**Causa:** Sistema de tracing da Qualcomm incompatível com Clang 21
+**Solução:** Script desativa CONFIG_TRACING automaticamente
+**Status:** ✅ RESOLVIDO
+
+### ❌ Erro 3: Format Strings (Clang 21+)
+**Erro:** `format '%d' expects argument of type 'int'`
+**Causa:** Código Qualcomm escrito para GCC 4.x
+**Solução:** Flags `-Wno-format -Wno-format-security` aplicadas
+**Status:** ✅ RESOLVIDO
+
+📖 **Documentação completa:** [ERROS-ENCONTRADOS.md](ERROS-ENCONTRADOS.md)  
+🔧 **Script de correção:** `./corrigir-erros.sh`
+
+---
+
 ## 🦞 DevSan AGI - CHECKLIST FINAL
 
 - ✅ Laboratório criado com estrutura limpa
@@ -286,6 +311,9 @@ fastboot boot arch/arm64/boot/Image.gz
 - ✅ Correções de formato aplicadas
 - ✅ Documentação técnica completa
 - ✅ Explicação didática incluída
+- ✅ **Documentação de erros encontrados**
+- ✅ **Script de correção automática**
+- ✅ **Metodologia de testes validada**
 
 ---
 
