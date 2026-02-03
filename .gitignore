@@ -39,4 +39,8 @@ kernel-source-xiaomi/
 kernel-moonstone-devs/
 android-ndk/
 backups/device-images/
+
+# Logs
+logs/
+logs-compilacao/
 *.log
