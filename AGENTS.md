@@ -1,6 +1,30 @@
 # AGENTS.MD - Android16-Kernel Build System
 
-> Documentação técnica para agents de IA - Compilação de kernel Android ARM64 em PC x86_64 Arch Linux
+> Documentação técnica para agents de IA - Compilação de kernel Android ARM64 em PC x86_64 Arch Linux  
+> **⚠️ PROMPT ESPECIALIZADO:** Use `/kernel-builder-pro-5.4.302` para builds automatizados
+
+---
+
+## 🚀 PROMPT ESPECIALIZADO RECOMENDADO
+
+**Para compilações automatizadas e persistentes, use o prompt especializado:**
+
+📄 **`/prompts/kernel-builder-pro-5.4.302.md`**
+
+Este prompt inclui:
+- ✅ Leitura obrigatória de toda a documentação
+- ✅ Estratégia completa de build (Fase 1 + Fase 2)
+- ✅ Uso de MCPs (tavily, webfetch, codesearch) para debug
+- ✅ Web search para erros desconhecidos
+- ✅ Máximo poder do PC (Ryzen 7 5700G, 16 threads)
+- ✅ Protocolo de persistência (nunca desistir)
+- ✅ Troubleshooting avançado
+
+**Como usar:**
+```bash
+# Copiar o prompt completo do arquivo:
+cat /home/deivi/Projetos/android16-kernel/prompts/kernel-builder-pro-5.4.302.md
+```
 
 ---
 
@@ -34,20 +58,35 @@ which bc  # required for kernel version
 sudo pacman -S aarch64-linux-gnu-gcc clang llvm make bc cpio kmod
 ```
 
-### Estrutura de Diretórios
+### Estrutura de Diretórios (Atualizada - Fev/2026)
 ```
-~/Projetos/Android16-Kernel/
-├── backups/
+~/Projetos/android16-kernel/
+├── 📦 kernel-moonstone-devs/       ← Kernel 5.4.302 AOSP (clonado)
+│   ├── arch/arm64/configs/moonstone_defconfig
+│   ├── build.config.common
+│   └── ...
+├── 🔧 build/                        ← Scripts de build (NOVO)
+│   ├── apply-tracing-fixes.sh      ← Corrige TRACE_INCLUDE_PATH
+│   ├── build-5.4.302.sh            ← Script principal
+│   ├── PAUSA-ANTES-DO-BUILD.md     ← Documento de contexto
+│   └── out/                        ← Output dos builds
+├── ⚙️ configs/                      ← Configs adicionais
+│   └── docker-lxc.config           ← Configs Docker/LXC (Fase 2)
+├── 📚 docs/                         ← Documentação completa
+│   ├── HISTORICO-BUILDS.md         ← Histórico de todas as tentativas
+│   ├── HISTORICO-COMPLETO.md       ← Jornada 5.4.191
+│   ├── INSTRUCOES-FLASH.md         ← Como instalar
+│   ├── halium-porting.md           ← Guia Halium
+│   └── ...
+├── 🎁 anykernel3-poco-x5/           ← Template AnyKernel3
+├── 💾 backups/                      ← Backups do device
 │   └── poco-x5-5g-rose-2025-02-01/
-│       ├── device-images-backup-2025-02-01.tar.xz
-│       └── kernel-config-5.4.302-eclipse.txt
-├── docs/
-│   ├── device-context.md
-│   ├── kernel-analysis.md
-│   └── halium-porting.md
-├── kernel-source/          # (clone futuro)
-├── build-scripts/          # (criar)
-└── out/                    # (gerado na build)
+├── 🗂️ deprecated/                  ← Arquivos antigos (5.4.191, Docker)
+│   ├── kernel-source/              ← Kernel 5.4.191 (Xiaomi)
+│   ├── laboratorio/                ← Docker experiments
+│   └── ...
+└── 🎯 prompts/
+    └── kernel-builder-pro-5.4.302.md  ← PROMPT ESPECIALIZADO
 ```
 
 ---
