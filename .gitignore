@@ -1,46 +1,85 @@
+# ============================================================
+# Android16 Kernel - .gitignore
+# Kernel 5.4.302 AOSP para POCO X5 5G (moonstone-devs)
+# ============================================================
+
+# Arquivos antigos deprecated (mantidos localmente, não no git)
+deprecated/
+
 # NDK e toolchains (muito grandes, baixar quando necessário)
 android-ndk-*/
 toolchains/
 *.tar.xz
+*.tar.bz2
+*.tar.gz
+
+# Kernel sources (git submodule ou clone separado)
+# O kernel-moonstone-devs/ é rastreado separadamente
+kernel-source/
+kernel-source-xiaomi/
+kernel-moonstone-devs/.git/
 
 # Build artifacts temporários
-kernel-source/.tmp_*
-kernel-source/scripts/basic/fixdep
-kernel-source/scripts/mod/modpost
-kernel-source/scripts/selinux/
-kernel-source/.*.cmd
-kernel-source/.config.old
-
-# Objetos compilados
 *.o
 *.o.d
+*.o.cmd
 *.ko
 *.mod.c
 *.symtypes
 *.order
 modules.builtin
+*.cmd
+.tmp_*
+*.mod
+*.symvers
+modules.order
+
+# Configs temporários do kernel
+.config.old
+.config
+
+# Objetos de compilação
+*.a
+*.elf
+*.bin
+*.img
 
 # Backups locais temporários
 *~
 *.swp
 *.swo
+*.bak
 .DS_Store
 
 # IDEs
 .vscode/
 .idea/
 *.code-workspace
-kernel-source/
-*.tar.bz2
-laboratorio/toolchain/
-*.zip
-*.tar.gz
-kernel-source-xiaomi/
-kernel-moonstone-devs/
-android-ndk/
-backups/device-images/
 
-# Logs
+# Logs e outputs
+t*.log
 logs/
 logs-compilacao/
-*.log
+
+# Output de build (apenas o diretório out/ dentro de build/)
+build/out/
+
+# Arquivos de release
+*.zip
+
+# Não ignorar diretórios importantes
+!anykernel3-poco-x5/
+!backups/
+!build-scripts/
+!build/
+!configs/
+!docs/
+
+# Kernel sources (clonados separadamente, não rastreados)
+# Se quiser como submodule, use: git submodule add <url> kernel-moonstone-devs
+kernel-moonstone-devs/
+
+# Mas ignorar subdiretórios específicos
+backups/device-images/
+laboratorio/toolchain/
+android-ndk/
