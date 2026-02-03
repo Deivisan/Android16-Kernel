@@ -32,3 +32,11 @@ modules.builtin
 *.code-workspace
 kernel-source/
 *.tar.bz2
+laboratorio/toolchain/
+*.zip
+*.tar.gz
+kernel-source-xiaomi/
+kernel-moonstone-devs/
+android-ndk/
+backups/device-images/
+*.log
