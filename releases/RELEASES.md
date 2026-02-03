@@ -1,4 +1,99 @@
-# 📦 DevSan AGI Kernel - Releases
+# 📦 Releases - Android 16 Kernel POCO X5 5G
+
+## 🏷️ Overview
+
+Esta seção contém todos os builds oficiais do kernel Android 16 para POCO X5 5G (moonstone).
+
+---
+
+## 📅 v3.0.1-TOUCHFIX-FINAL (2026-02-04)
+
+### 🎯 FINAL TOUCHSCREEN FIX
+
+**Arquivo**: `KernelSU-Next-v3.0.1-SUSFS-Docker-POCO-X5-5G-20260204-FINAL.zip`  
+**Tamanho**: 22.5MB  
+**SHA256**: `47cda26ff3b333182c5a0011dde29a9b14107f2f81c77843ade1d95736e290e4`  
+**Status**: 🧪 EM TESTE - Build FINAL completo
+
+### ✅ Features:
+- **KernelSU-Next v3.0.1**: Root com AllowList
+- **SUSFS**: Hide modules de detection
+- **Docker/LXC**: Container support completo
+- **FT3519T Fix**: Array de firmware corrigido com header válido
+- **DTBO Atualizado**: moonstone-overlay completo
+- **Debug Habilitado**: FTS_DEBUG_EN=1 para troubleshooting
+
+### 🔧 Correções Críticas:
+1. **Firmware Array**: Preenchido com header FT3519T (0x89, 0x00, 0x35, 0x19...)
+2. **Config Padrão**: CONFIG_TOUCHSCREEN_FT3519T=y automaticamente
+3. **Device Tree**: Adicionado project-name e ic-type específicos
+4. **Debug Mode**: Logs detalhados para diagnóstico
+
+### 📱 Instalação:
+```bash
+adb reboot recovery
+adb sideload KernelSU-Next-v3.0.1-SUSFS-Docker-POCO-X5-5G-20260204-FINAL.zip
+```
+
+### 🧪 Teste Checklist:
+- [ ] Boot normal sem falhas
+- [ ] Touchscreen funciona (toque único)
+- [ ] Multi-touch funciona (pinça zoom)
+- [ ] KernelSU ativo e funcionando
+- [ ] Docker/LXC operacional
+- [ ] Sistema estável sem crashes
+
+### 📋 Histórico:
+- **v3.0.1**: Build inicial - Touch não funciona
+- **v3.0.1-DTBO-FIX**: DTBO corrigido - Touch ainda falha
+- **v3.0.1-FINAL**: Correção completa - Em teste
+
+---
+
+## 📊 Metadados
+
+| Build | Data | Status | Tamanho | Touch |
+|-------|------|--------|--------|--------|
+| v3.0.1 | 2026-02-04 | ❌ | 22MB | ❌ Não |
+| v3.0.1-DTBO-FIX | 2026-02-04 | ❌ | 22MB | ❌ Não |
+| v3.0.1-FINAL | 2026-02-04 | 🧪 | 22.5MB | 🔄 Testando |
+
+---
+
+## 🔍 Notas de Desenvolvimento
+
+### Problemas Identificados:
+1. **Firmware Array Vazio**: `pb_file_ft5452j[] = { }` impedia inicialização
+2. **Config Desabilitada**: `CONFIG_TOUCHSCREEN_FT3519T=n` no Kconfig
+3. **DTBO Incompleto**: Faltavam propriedades específicas do moonstone
+4. **Debug Desabilitado**: Impossível diagnosticar problemas de hardware
+
+### Soluções Implementadas:
+1. Firmware stub com header válido FT3519T
+2. Config automática no Kconfig
+3. DTBO completo com identificação do hardware
+4. Debug habilitado para logs detalhados
+
+---
+
+## 🎯 Próximos Passos
+
+### Se v3.0.1-FINAL funcionar:
+1. **Extrair firmware real** do boot stock via análise binária
+2. **Otimizar performance** e reduzir tamanho do kernel
+3. **Documentar instalação** e criar guia completo
+4. **Criar script de build automatizado**
+
+### Se v3.0.1-FINAL falhar:
+1. **Investigar hardware** específico do moonstone
+2. **Testar driver alternativo** para FT3519T
+3. **Considerar downgrade** para kernel 5.4.191 estável
+4. **Analisar logs detalhados** do boot original
+
+---
+
+**Última atualização**: 2026-02-04 13:00  
+**Status**: Aguardando feedback do teste FINAL
 
 ## v5.4.302-base (03/02/2026)
 
