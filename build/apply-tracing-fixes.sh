@@ -41,26 +41,26 @@ echo ""
 # Formato: ["caminho/relativo/do/header"]="TRACE_INCLUDE_PATH correto"
 declare -A TRACE_FIXES=(
     # Techpack DATARMNET (Rede)
-    ["techpack/datarmnet/core/rmnet_trace.h"]="techpack/datarmnet/core"
-    ["techpack/datarmnet/core/wda.h"]="techpack/datarmnet/core"
-    ["techpack/datarmnet/core/dfc.h"]="techpack/datarmnet/core"
+    ["techpack/datarmnet/core/rmnet_trace.h"]="../../techpack/datarmnet/core"
+    ["techpack/datarmnet/core/wda.h"]="../../techpack/datarmnet/core"
+    ["techpack/datarmnet/core/dfc.h"]="../../techpack/datarmnet/core"
     
     # Techpack Camera
     ["techpack/camera/drivers/cam_utils/cam_trace.h"]="techpack/camera/drivers/cam_utils"
     
     # Techpack Display
-    ["techpack/display/rotator/sde_rotator_trace.h"]="techpack/display/rotator"
-    ["techpack/display/msm/sde/sde_trace.h"]="techpack/display/msm/sde"
+    ["techpack/display/rotator/sde_rotator_trace.h"]="../../techpack/display/rotator"
+    ["techpack/display/msm/sde/sde_trace.h"]="../../techpack/display/msm/sde"
     
     # Techpack DataIPA
-    ["techpack/dataipa/drivers/platform/msm/ipa/ipa_trace.h"]="techpack/dataipa/drivers/platform/msm/ipa"
-    ["techpack/dataipa/drivers/platform/msm/ipa/rndis_ipa_trace.h"]="techpack/dataipa/drivers/platform/msm/ipa"
+    ["techpack/dataipa/drivers/platform/msm/ipa/ipa_v3/ipa_trace.h"]="../../techpack/dataipa/drivers/platform/msm/ipa/ipa_v3"
+    ["techpack/dataipa/drivers/platform/msm/ipa/ipa_clients/rndis_ipa_trace.h"]="../../techpack/dataipa/drivers/platform/msm/ipa/ipa_clients"
     
     # Techpack Video
-    ["techpack/video/msm/vidc/msm_vidc_events.h"]="techpack/video/msm/vidc"
+    ["techpack/video/msm/vidc/msm_vidc_events.h"]="../../techpack/video/msm/vidc"
     
     # Kernel Scheduler (WALT)
-    ["kernel/sched/walt/trace.h"]="kernel/sched/walt"
+    ["kernel/sched/walt/trace.h"]="../../kernel/sched/walt"
 )
 
 # Contadores
@@ -81,15 +81,19 @@ for file in "${!TRACE_FIXES[@]}"; do
         fi
         
         # Verificar se precisa de correção
-        if grep -q "#define TRACE_INCLUDE_PATH \"\.\"" "$full_path" 2>/dev/null || \
-           grep -q "#define TRACE_INCLUDE_PATH ." "$full_path" 2>/dev/null; then
-            # Aplicar correção
-            sed -i "s|#define TRACE_INCLUDE_PATH.*|#define TRACE_INCLUDE_PATH $new_path|" "$full_path"
-            echo "  ✅ $file"
-            echo "     Alterado para: TRACE_INCLUDE_PATH $new_path"
-            FIXED_COUNT=$((FIXED_COUNT + 1))
+        if grep -q "^#define TRACE_INCLUDE_PATH" "$full_path" 2>/dev/null; then
+            current_path=$(grep "^#define TRACE_INCLUDE_PATH" "$full_path" | head -1 | awk '{print $3}')
+            if [ "$current_path" != "$new_path" ]; then
+                sed -i "s|^#define TRACE_INCLUDE_PATH.*|#define TRACE_INCLUDE_PATH $new_path|" "$full_path"
+                echo "  ✅ $file"
+                echo "     Alterado para: TRACE_INCLUDE_PATH $new_path"
+                FIXED_COUNT=$((FIXED_COUNT + 1))
+            else
+                echo "  ⏭️  $file (já corrigido)"
+                SKIPPED_COUNT=$((SKIPPED_COUNT + 1))
+            fi
         else
-            echo "  ⏭️  $file (já corrigido ou não precisa)"
+            echo "  ⚠️  $file (TRACE_INCLUDE_PATH não encontrado)"
             SKIPPED_COUNT=$((SKIPPED_COUNT + 1))
         fi
     else

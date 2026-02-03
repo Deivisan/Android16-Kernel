@@ -8,6 +8,32 @@ Esta é a lista de arquivos modificados no código-fonte do kernel para permitir
 
 ## 🔧 Arquivos Modificados
 
+### ✅ Kernel 5.4.302 (kernel-moonstone-devs)
+
+1) `techpack/camera/drivers/cam_utils/cam_trace.h`
+   - Ajuste de TRACE_INCLUDE_* para Clang
+
+2) `drivers/input/touchscreen/FT3519T/focaltech_flash/focaltech_upgrade_ft3519t.c`
+   - Remove pramboot inexistente e stub de firmware
+
+3) `drivers/input/touchscreen/FT3519T/focaltech_config.h`
+   - Macros apontam para fw_stub.i
+
+4) `drivers/input/touchscreen/FT3519T/include/firmware/fw_stub.i`
+   - Stub firmware (novo arquivo)
+
+5) `drivers/power/supply/pd_policy_manager.h`
+   - Include ajustado para tcpc
+
+6) `drivers/usb/typec/tcpc/inc/pd_dpm_pdo_select.h`
+   - Include ajustado para tcpci.h
+
+7) `build/apply-tracing-fixes.sh`
+   - Script de correções TRACE_INCLUDE_PATH
+
+8) `build/build-5.4.302.sh`
+   - Script de build consolidado
+
 ### 1. `scripts/gcc-wrapper.py`
 
 **Localização:** `kernel-source/scripts/gcc-wrapper.py`
@@ -126,8 +152,7 @@ tar -xzf kernel-source-5.4.191-modificado.tar.gz
 
 1. **Não use GCC 15.x ou Clang 21.x** - Muito novos, incompatíveis
 2. **Use Android NDK r26d com Clang 17.0.2** - Versão testada que funciona
-3. **Sempre compile com WERROR=0** - Permite warnings não-fatais
-4. **Mantenha gcc-wrapper.py modificado** - Crítico!
+3. **Sempre use olddefconfig** - evita prompts interativos
 
 ---
 

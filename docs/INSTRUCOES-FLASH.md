@@ -1,7 +1,7 @@
-# 📱 FLASHING INSTRUCTIONS - Docker/LXC/NetHunter Kernel for POCO X5 5G
+# 📱 FLASHING INSTRUCTIONS - Kernel 5.4.302 (moonstone/rose)
 
-**Date:** 2026-02-02  
-**Kernel Version:** v1 (Build v12)  
+**Date:** 2026-02-03  
+**Kernel Version:** 5.4.302 (build nativo)  
 **Device:** POCO X5 5G (moonstone/rose)  
 **Android:** 13-14  
 
@@ -35,23 +35,24 @@
 
 ---
 
-## 📦 PACKAGE INFORMATION
+## 📦 PACKAGE INFORMATION (ATUAL)
 
-### **Flashable ZIP:**
-```
-Filename: Docker-LXC-NetHunter-Kernel-POCO-X5-5G-v1.zip
-Size: 18 MB
-MD5: ba4fbe9f397fb80e7c65b87849c3283b
-Location: ~/Projetos/android16-kernel/
-```
-
-### **Kernel Image (inside ZIP):**
+### **Kernel Image (build 5.4.302):**
 ```
 Filename: Image.gz
-Size: 15 MB (compressed), 31 MB (uncompressed)
-MD5: 5878d68818b3295aeca7d61db9f14945
+Location: ~/Projetos/android16-kernel/kernel-moonstone-devs/arch/arm64/boot/Image.gz
+Backup:  ~/Projetos/android16-kernel/build/out/Image-*.gz
+Size: ~19 MB (compressed)
 Compiler: Android NDK r26d Clang 17.0.2
-Build Date: 2026-02-02 13:57:08 BRT
+Build Log: ~/Projetos/android16-kernel/build/build-5.4.302-20260203-105423.log
+```
+
+### **Boot image (a gerar):**
+```
+Filename: boot-b-5.4.302-<timestamp>.img
+Location: ~/Projetos/android16-kernel/build/out/
+Gerado por: magiskboot (recomendado)
+Status: PENDENTE (apenas após OK do teste)
 ```
 
 ### **Features Enabled:**
@@ -66,18 +67,17 @@ Build Date: 2026-02-02 13:57:08 BRT
 
 ---
 
-## 🎯 RECOMMENDED TESTING METHOD (SAFEST)
+## 🎯 MÉTODO RECOMENDADO (SEGURO) - TESTE TEMPORÁRIO
 
 ### **Method 1: Temporary Boot Test (NO PERMANENT CHANGES)**
 
 This method boots the kernel ONCE without modifying your boot partition. If it fails, just reboot normally.
 
-#### **Step 1: Extract kernel from ZIP**
+#### **Step 1: Usar o Image.gz gerado**
 ```bash
-# On your PC:
-cd ~/Projetos/android16-kernel/
-unzip Docker-LXC-NetHunter-Kernel-POCO-X5-5G-v1.zip Image.gz
-mv Image.gz test-kernel.img
+# No PC:
+KERNEL=~/Projetos/android16-kernel/kernel-moonstone-devs/arch/arm64/boot/Image.gz
+```
 ```
 
 #### **Step 2: Reboot to fastboot**
@@ -88,10 +88,10 @@ adb reboot bootloader
 # Or manually: Power off, then hold Vol- + Power
 ```
 
-#### **Step 3: Temporarily boot the kernel**
+#### **Step 3: Boot temporário (não grava nada)**
 ```bash
-# On PC:
-fastboot boot test-kernel.img
+# No PC:
+fastboot boot "$KERNEL"
 
 # Output should show:
 # Sending 'boot.img' (15728 KB)                      OKAY [  0.xxx s]
@@ -99,7 +99,7 @@ fastboot boot test-kernel.img
 # Finished. Total time: 0.xxx s
 ```
 
-#### **Step 4: Monitor boot process**
+#### **Step 4: Verificar boot**
 ```bash
 # Watch the device screen - it should boot normally
 # Once booted, connect via ADB:
@@ -108,7 +108,7 @@ adb shell
 
 # Check kernel version:
 uname -a
-# Should show: Linux version 5.4.191 ... (clang version 17.0.2)
+# Deve mostrar: Linux version 5.4.302 ... (clang version 17.0.2)
 
 # Check Docker support:
 dmesg | grep -i docker
@@ -136,11 +136,42 @@ adb reboot
 
 ---
 
-## 🔥 PERMANENT INSTALLATION METHOD (AFTER SUCCESSFUL TEST)
+## 🔥 INSTALAÇÃO PERMANENTE (APÓS TESTE OK)
 
 ⚠️ **ONLY DO THIS AFTER METHOD 1 SUCCEEDED!**
 
-### **Method 2A: Flash via Recovery (RECOMMENDED)**
+### **Método A: Fastboot direto no slot B (recomendado para teste)**
+
+> ⚠️ Só após você confirmar que o boot temporário funcionou.
+
+```bash
+# Garantir slot B como alvo (mantém A seguro)
+fastboot getvar current-slot
+fastboot flash boot_b "$KERNEL"
+fastboot set_active b
+fastboot reboot
+```
+
+### **Método B: Boot.img (quando tivermos magiskboot)**
+
+> Gera um boot.img novo com kernel 5.4.302 mantendo ramdisk original.
+
+```bash
+# 1) Extrair boot.img original do backup
+cd ~/Projetos/android16-kernel
+mkdir -p build/boot-work && cd build/boot-work
+tar -xJf ../../backups/poco-x5-5g-rose-2025-02-01/device-images-backup-2025-02-01.tar.xz
+
+# 2) Usar magiskboot (se instalado) para unpack/repack
+magiskboot unpack ./device-images/boot.img
+cp "$KERNEL" kernel
+magiskboot repack boot.img boot-b-5.4.302.img
+
+# 3) Flashar no slot B
+fastboot flash boot_b boot-b-5.4.302.img
+fastboot set_active b
+fastboot reboot
+```
 
 #### **Step 1: Backup current boot partition**
 ```bash
@@ -213,9 +244,9 @@ Monitor boot:
 
 ---
 
-### **Method 2B: Flash via Fastboot (ALTERNATIVE)**
+### **Método C: Recovery/AnyKernel3**
 
-⚠️ **More complex, requires extracting boot.img and repacking. Use Method 2A instead.**
+> Só se você gerar ZIP atualizado (ainda não feito para 5.4.302).
 
 ---
 
@@ -273,12 +304,12 @@ adb logcat -d > ~/logs/custom-kernel-logcat.log
 
 ---
 
-## 🔍 POST-INSTALLATION VERIFICATION
+## 🔍 VERIFICAÇÃO PÓS-INSTALAÇÃO
 
 ### **Check 1: Kernel version**
 ```bash
 adb shell uname -a
-# Expected: Linux version 5.4.191 ... (clang version 17.0.2)
+# Expected: Linux version 5.4.302 ... (clang version 17.0.2)
 ```
 
 ### **Check 2: Docker support in dmesg**
@@ -444,15 +475,10 @@ adb shell dmesg > dmesg.txt                      # Kernel messages
 
 ## 📝 CHANGELOG
 
-### **Version 1 (Build v12) - 2026-02-02**
-- Initial release
-- Docker support (cgroups, namespaces, overlayfs)
-- LXC container support
-- Kali NetHunter compatibility
-- USB HID gadget support
-- Wireless extensions enabled
-- Based on stock 5.4.191 kernel source
-- Compiled with Android NDK r26d Clang 17.0.2
+### **Kernel 5.4.302 - Build 2026-02-03**
+- Build completo com NDK r26d Clang 17.0.2
+- Fixes de tracing + câmera + FT3519T + TCPC
+- Sem testes em hardware ainda
 
 ---
 

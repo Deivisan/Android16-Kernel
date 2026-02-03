@@ -305,3 +305,72 @@ android16-kernel/
 **Próxima ação:** Criar scripts de build para 5.4.302  
 **Status:** ✅ Workspace limpo, pronto para iniciar builds limpos  
 **Data:** 2026-02-03 10:00 BRT
+
+---
+
+## ✅ BUILD 5.4.302 (SUCESSO)
+
+**Data:** 2026-02-03 10:59 BRT  
+**Kernel:** 5.4.302 (kernel-moonstone-devs, lineage-23.1)  
+**Toolchain:** Android NDK r26d (Clang 17.0.2)  
+**Comando:** `./build/build-5.4.302.sh --tracing-fix -j12`  
+**Resultado:** ✅ **SUCESSO**  
+**Artifact:** `kernel-moonstone-devs/arch/arm64/boot/Image.gz` (19 MB)
+
+### ✅ Correções aplicadas (5.4.302)
+1. **Tracing (Clang include path):**
+   - Script: `build/apply-tracing-fixes.sh`
+   - Corrige `TRACE_INCLUDE_PATH` e headers em:
+     - `techpack/datarmnet/*`
+     - `techpack/display/*`
+     - `techpack/dataipa/*`
+     - `techpack/camera/*`
+     - `techpack/video/*`
+     - `kernel/sched/walt/trace.h`
+
+2. **Camera trace header:**
+   - `techpack/camera/drivers/cam_utils/cam_trace.h`
+   - `TRACE_INCLUDE_FILE cam_trace`
+   - `TRACE_INCLUDE_PATH techpack/camera/drivers/cam_utils`
+
+3. **Touchscreen FT3519T (firmware ausente):**
+   - `drivers/input/touchscreen/FT3519T/focaltech_flash/focaltech_upgrade_ft3519t.c`
+     - remove include de pramboot inexistente
+     - `pb_file_ft5452j[] = { }`
+     - `pramboot_supported = false`
+     - `write_pramboot_private = NULL`
+   - `drivers/input/touchscreen/FT3519T/focaltech_config.h`
+     - macros apontam para stub
+   - Novo: `drivers/input/touchscreen/FT3519T/include/firmware/fw_stub.i`
+
+4. **Power supply include path:**
+   - `drivers/power/supply/pd_policy_manager.h`
+   - include ajustado para `../../usb/typec/tcpc/inc/tcpm.h`
+
+5. **TCPC include path:**
+   - `drivers/usb/typec/tcpc/inc/pd_dpm_pdo_select.h`
+   - include ajustado para `"tcpci.h"`
+
+### ✅ Pré-build obrigatório (evita prompts e GCC inválido)
+```bash
+export NDK_PATH=~/Downloads/android-ndk-r26d
+export CLANG_BIN=$NDK_PATH/toolchains/llvm/prebuilt/linux-x86_64/bin
+export ARCH=arm64
+export SUBARCH=arm64
+export CC=$CLANG_BIN/clang
+export CXX=$CLANG_BIN/clang++
+export CLANG_TRIPLE=aarch64-linux-gnu-
+export CROSS_COMPILE=aarch64-linux-gnu-
+export CROSS_COMPILE_ARM32=arm-linux-gnueabi-
+export LLVM=1
+export PATH=$CLANG_BIN:$PATH
+
+make ARCH=arm64 moonstone_defconfig
+make ARCH=arm64 olddefconfig
+make ARCH=arm64 scripts
+```
+
+### ✅ Estado atual
+- **Build completo OK**
+- **Ainda NÃO testado em hardware**
+- **Estratégia de teste:** fastboot boot temporário → só depois flash slot B
