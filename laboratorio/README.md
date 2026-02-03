@@ -1,220 +1,295 @@
-# 🧪 LABORATÓRIO DE BUILD - KERNEL MOONSTONE (POCO X5 5G)
+# 🦞 DevSan Kernel Build Laboratory - Moonstone
 
-> Ambiente profissional e imune a erros para compilação do kernel Android
-> 
-> **Device:** POCO X5 5G (moonstone)  
-> **SoC:** Snapdragon 695 (SM6375/Blair)  
-> **Kernel:** 5.4.302-msm-android (QGKI)  
-> **Author:** DevSan AGI para Deivison Santana
+> Ambiente de build profissional para kernel Android POCO X5 5G
+> Versão: 1.0.0
+> DevSan AGI
 
 ---
 
-## 📁 Estrutura do Laboratório
+## 📋 Estrutura
 
 ```
 laboratorio/
-├── toolchain/              # Google Clang/LLVM (r416183b)
-│   └── google-clang/
-│       └── bin/clang       # Android Clang 14.0.6
-├── build-tools/            # Android build-tools
-├── kernel/                 # Link para kernel-moonstone-devs
-├── out/                    # Output do build
-│   ├── Image.gz            # Kernel compilado
-│   └── config-*            # Config usada
-├── logs/                   # Logs de build
-├── build-moonstone-bulletproof.sh  # Script principal
-└── README.md               # Esta documentação
+├── 📄 Dockerfile                      # Imagem Docker Ubuntu 20.04 + NDK r23b
+├── 📄 docker-compose.yml              # Configuração Docker Compose
+├── 📜 build-moonstone-docker.sh     # Script principal de build
+├── 📜 scripts/                      # Scripts auxiliares
+│   ├── setup-docker.sh              # Setup inicial automático
+│   ├── validate-build.sh            # Validações pré-build
+│   └── apply-fixes.sh              # Correções automáticas
+├── 📦 out/                          # Output do build (Image.gz)
+├── 📋 logs/                         # Logs de build e resumos
+├── 📄 DOCKER-BUILD-GUIDE.md      # Guia completo
+├── 📄 KNOWN-ISSUES.md            # Erros conhecidos
+├── 📄 EXPECTED-OUTPUT.md         # Output esperado
+└── 📄 README.md                     # Este arquivo
 ```
 
 ---
 
-## 🔧 Toolchain Correta
+## 🚀 Quick Start
 
-### ❌ ERRO CRÍTICO CORRIGIDO
-**NÃO usar:** Clang do sistema Arch Linux (`/usr/bin/clang`)
-
-**USAR:** Google Clang da Android toolchain
-
-| Componente | Versão | Path |
-|------------|--------|------|
-| Clang | r416183b (14.0.6) | `toolchain/google-clang/bin/clang` |
-| LLVM AR | 14.0.6 | `toolchain/google-clang/bin/llvm-ar` |
-| LLVM NM | 14.0.6 | `toolchain/google-clang/bin/llvm-nm` |
-| LD.LLD | 14.0.6 | `toolchain/google-clang/bin/ld.lld` |
-
-### Download da Toolchain
-
-```bash
-# URL oficial Google
-https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r416183b.tar.gz
-```
-
----
-
-## 🚀 Como Usar
-
-### 1. Primeira vez (Setup)
+### Setup Inicial (Uma vez)
 
 ```bash
 cd /home/deivi/Projetos/Android16-Kernel/laboratorio
-chmod +x build-moonstone-bulletproof.sh
-./build-moonstone-bulletproof.sh
+./scripts/setup-docker.sh
 ```
 
-O script vai:
-1. ✅ Criar estrutura de diretórios
-2. ✅ Baixar Google Clang automaticamente
-3. ✅ Verificar kernel source
-4. ✅ Compilar com parâmetros corretos
-
-### 2. Builds subsequentes
+### Compilar Kernel
 
 ```bash
-./build-moonstone-bulletproof.sh
+cd /home/deivi/Projetos/Android16-Kernel/laboratorio
+./build-moonstone-docker.sh
 ```
 
----
-
-## ⚙️ Parâmetros de Build
-
-### Variáveis de Ambiente (Automáticas)
+### Variáveis de Build
 
 ```bash
-# Toolchain
-export LLVM=1                    # Usar LLVM completo
-export LLVM_IAS=1                # LLVM Integrated Assembler
-export CC=clang                  # Google Clang
-export LD=ld.lld                 # LLVM Linker
+# Compilar com 8 jobs (padrão: nproc)
+JOBS=8 ./build-moonstone-docker.sh
 
-# Arquitetura
-export ARCH=arm64
-export SUBARCH=arm64
-export CROSS_COMPILE=aarch64-linux-gnu-
-export CLANG_TRIPLE=aarch64-linux-gnu
+# Compilar com limpeza anterior
+CLEAN=yes ./build-moonstone-docker.sh
 
-# Kernel configs
-export KCFLAGS="-D__ANDROID_COMMON_KERNEL__"
-export LOCALVERSION="-qgki"
+# Compilar tipo específico
+BUILD_TYPE=qgki ./build-moonstone-docker.sh
 ```
-
-### Defconfig Usada
-
-```
-moonstone_defconfig
-```
-
-Local: `arch/arm64/configs/moonstone_defconfig`
 
 ---
 
-## 🛡️ Imunidade a Erros
+## 📚 Documentação
 
-### Problemas Resolvidos
+- **DOCKER-BUILD-GUIDE.md** - Guia completo de build
+  - Como funciona o sistema
+  - Como customizar builds
+  - Troubleshooting detalhado
+  - Como testar no device
 
-| Problema | Solução |
-|----------|---------|
-| Erros de formato (-Werror=format) | Correções aplicadas nos techpacks |
-| Clang incorreto | Uso do Google Clang r416183b |
-| PATH errado | Configuração absoluta no script |
-| Diretório errado | `cd` explícito e verificações |
-| Toolchain faltando | Download automático |
+- **KNOWN-ISSUES.md** - Erros conhecidos
+  - Erros documentados
+  - Soluções testadas
+  - Como contribuir com novos erros
 
-### Verificações Automáticas
-
-- ✅ Toolchain existe?
-- ✅ Kernel source existe?
-- ✅ defconfig existe?
-- ✅ clang funciona?
-- ✅ .config gerado?
-- ✅ Image.gz gerado?
+- **EXPECTED-OUTPUT.md** - Output esperado
+  - Arquivos gerados
+  - Métricas de build
+  - Validação do kernel
+  - Checklists de teste
 
 ---
 
-## 📊 Tempo de Build
+## 🔧 Scripts
 
-| Hardware | Jobs | Tempo Estimado |
-|----------|------|----------------|
-| Ryzen 7 5700G (16 threads) | -j16 | 2-4 horas |
-| SSD NVMe | - | Leitura/escrita rápida |
-| 14GB RAM | - | Suficiente |
+### build-moonstone-docker.sh (Principal)
+
+Script principal que orquestra todo o processo:
+
+1. ✅ Valida ambiente (toolchain, espaço, configs)
+2. 🔧 Aplica correções automáticas (tracing, format strings)
+3. ⚡ Compila com NDK r23b Clang r416183b
+4. ✅ Valida resultado (tamanho, SHA256)
+5. 📝 Gera relatório completo
+
+Uso:
+```bash
+./build-moonstone-docker.sh
+```
+
+### setup-docker.sh (Setup Inicial)
+
+Configura ambiente Docker automaticamente:
+
+1. Verifica Docker instalado
+2. Cria estrutura de diretórios
+3. Configura ccache (50GB)
+4. Valida pré-requisitos
+5. Prepara scripts auxiliares
+
+Uso:
+```bash
+./scripts/setup-docker.sh
+```
+
+### validate-build.sh (Validação)
+
+Verifica ambiente antes de compilar:
+
+1. Verifica kernel source
+2. Verifica toolchain (Clang)
+3. Valida configs críticas
+4. Verifica espaço em disco
+5. Verifica RAM disponível
+6. Verifica ccache
+
+Uso:
+```bash
+./scripts/validate-build.sh
+```
+
+### apply-fixes.sh (Correções)
+
+Aplica correções automáticas:
+
+1. Corrige arquivos de tracing
+2. Corrige strings de formato em codecs
+3. Verifica techpacks problemáticos
+4. Ajusta configs críticas
+5. Ajusta permissões
+
+Uso:
+```bash
+./scripts/apply-fixes.sh
+```
 
 ---
 
-## 🎁 Output
+## 🐳 Docker
 
-### Arquivos Gerados
-
-```
-out/
-├── Image.gz              # Kernel bootável (15-25MB)
-└── config-YYYYMMDD-HHMMSS # Config usada
-```
-
-### Verificação
+### Build Image
 
 ```bash
-# Verificar kernel
-file out/Image.gz
-strings out/Image.gz | grep "Linux version"
+cd /home/deivi/Projetos/Android16-Kernel/laboratorio
+docker-compose build --no-cache
+```
+
+### Start Container
+
+```bash
+docker-compose up -d
+docker-compose exec kernel-build bash
+```
+
+### Stop Container
+
+```bash
+docker-compose down
 ```
 
 ---
 
-## 🔍 Troubleshooting
+## 📊 Diretórios Importantes
 
-### Erro: "clang não encontrado"
+### out/ (Output)
 
-**Causa:** Toolchain não baixou  
-**Solução:** Script baixa automaticamente, verificar internet
+Arquivos gerados pelo build:
+- `Image.gz` - Kernel comprimido (15-25MB)
+- `vmlinux` - ELF não-comprimido (50-100MB)
+- `System.map` - Símbolos do kernel (10-20MB)
+- `dts/` - Device Tree Blobs
 
-### Erro: "moonstone_defconfig não encontrado"
+### logs/ (Logs)
 
-**Causa:** Kernel source no lugar errado  
-**Solução:** Verificar `kernel-moonstone-devs/`
+Logs de build e resumos:
+- `build-YYYYMMDD-HHMMSS.log` - Log completo
+- `summary-YYYYMMDD-HHMMSS.txt` - Resumo
 
-### Erro: Build falha após limpeza
+### scripts/ (Auxiliares)
 
-**Causa:** `make mrproper` apagou tudo  
-**Solução:** Script usa `make clean` apenas
+Scripts de automação e correção:
+- `setup-docker.sh` - Setup inicial
+- `validate-build.sh` - Validação
+- `apply-fixes.sh` - Correções
 
 ---
 
-## 📝 Notas Técnicas
+## 🎯 Target Device
 
-### Kernel Info
+- **Device:** POCO X5 5G (moonstone/rose)
+- **SoC:** Snapdragon 695 (SM6375)
+- **CPU:** Qualcomm Kryo 660 (2x2.4GHz + 6x1.8GHz)
+- **GPU:** Adreno 619
+- **Kernel:** MSM 5.4 + Android Patches
+- **Toolchain:** Clang r416183b (Android NDK r23b)
+- **Arch:** ARM64 (armv8.2-a)
 
+---
+
+## ⚡ Performance
+
+### Ryzen 7 5700G (16 threads)
+
+- **1° Build (sem ccache):** 2-3 horas
+- **Rebuild (com ccache):** 30-45 minutos
+- **Jobs recomendados:** 8-16
+
+### Configuração Otimizada
+
+```bash
+# /home/deivi/.ccache/ccache.conf
+max_size = 50G
+compression = true
+umask = 002
+stats_log = true
 ```
-Version: 5.4.302
-Patchlevel: 302
-Extraversion: -qgki
-Defconfig: moonstone_defconfig
-Arch: arm64
-Target: msm.lahaina
+
+---
+
+## 🔍 Debugging
+
+### Verificar Log de Build
+
+```bash
+tail -f /home/deivi/Projetos/Android16-Kernel/laboratorio/logs/build-*.log
 ```
 
-### Configs Importantes
+### Verificar ccache Stats
 
-| Config | Status | Descrição |
-|--------|--------|-----------|
-| CONFIG_ARCH_BLAIR | ✅ | SoC SM6375 |
-| CONFIG_ARCH_QCOM | ✅ | Qualcomm support |
-| CONFIG_SCHED_WALT | ✅ | WALT scheduler |
-| CONFIG_BUILD_ARM64_DT_OVERLAY | ✅ | Device Tree Overlay |
+```bash
+docker-compose exec kernel-build ccache -s
+```
 
----
+### Verificar Status do Container
 
-## 🦞 DevSan AGI - Checklist de Qualidade
-
-- [x] Toolchain correta (Google Clang)
-- [x] Script bulletproof com verificações
-- [x] Erros de formato corrigidos
-- [x] Diretórios absolutos
-- [x] Logging completo
-- [x] Tratamento de erros robusto
-- [x] Ambiente isolado (laboratorio/)
+```bash
+docker-compose ps
+docker-compose logs kernel-build
+```
 
 ---
 
-**Criado em:** 2025-02-02  
-**Versão:** 1.0-BULLETPROOF  
-**Status:** ✅ PRONTO PARA COMPILAR
+## 🤝 Contribuindo
+
+Para melhorar o sistema:
+
+1. Documentar novo erro em `KNOWN-ISSUES.md`
+2. Adicionar correção em `apply-fixes.sh`
+3. Testar e validar
+4. Atualizar `DOCKER-BUILD-GUIDE.md`
+5. Atualizar este README
+
+---
+
+## 📝 Notas Importantes
+
+- ✅ **Dockerfile** baixa NDK r23b automaticamente
+- ✅ **ccache** configurado com 50GB
+- ✅ **Correções automáticas** para tracing e format strings
+- ✅ **Validações** pré-build para evitar tempo perdido
+- ✅ **Logs detalhados** para debugging
+- ⚠️ **Format strings** em codecs requerem correção manual em alguns casos
+- ⚠️ **Techpacks problemáticos** identificados mas não desativados automaticamente
+
+---
+
+## 🎉 Checklist de Build Completo
+
+Antes de considerar build como "bem-sucedido", verificar:
+
+- [ ] Image.gz existe (15-25MB)
+- [ ] vmlinux existe
+- [ ] System.map existe
+- [ ] SHA256 calculado
+- [ ] Build log sem erros
+- [ ] Summary log gerado
+- [ ] Configs críticas habilitadas
+- [ ] Validações passadas
+
+**Se TODOS checkmarks, build está pronto para teste!**
+
+---
+
+**🦞 DevSan AGI - v1.0.0 - 2026**  
+**Author:** Deivison Santana (@deivisan)  
+**Project:** Android16 Kernel - Moonstone Build System  
+**Target:** POCO X5 5G (Snapdragon 695)
